@@ -1,0 +1,72 @@
+unit Unit1;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
+  FMX.Controls.Presentation, FMX.Edit, FMX.Objects, FMX.Layouts, FMX.StdCtrls,
+  FMX.ListBox, SysInit;
+
+type
+  TForm1 = class(TForm)
+    Layout1: TLayout;
+    Rectangle1: TRectangle;
+    Edit1: TEdit;
+    StyleBook1: TStyleBook;
+    SearchEditButton1: TSearchEditButton;
+    ListBox: TListBox;
+    Switch1: TSwitch;
+  private
+
+  Var ListBoxItem : TListBoxItem;
+    function ListaAll: Boolean;
+    procedure SwitchOnClick(Sender: TObject);
+
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.fmx}
+
+
+
+function TForm1.ListaAll:Boolean;
+Begin
+  with ListBox do
+    Begin
+      Items.Clear;
+      BeginUpdate;
+
+      for var I := 0 to 20 do
+        begin
+          ListBoxItem := TListBoxItem.Create(ListBox);
+          ListBoxItem.Parent := ListBox;
+          ListBoxItem.StyleLookup := 'StyleListBox';
+          ListBoxItem.Height := 130;
+
+          ListBoxItem.Tag                                 := i;
+          ListBoxItem.StylesData['lbl_id']                := i.ToString;
+          ListBoxItem.StylesData['lbl_nome']              := 'Nome: ' + i.ToString;
+          ListBoxItem.StylesData['lbl_usuario']           := 'Usuário: ' + i.ToString;;
+          ListBoxItem.StylesData['lbl_endereco']          := 'Endereço: ' + i.ToString;;
+
+          ListBoxItem.StylesData['sw.OnClick']            := TValue.From<TNotifyEvent>(SwitchOnClick);
+        end;
+   End;
+End;
+
+End;
+
+procedure TForm1.SwitchOnClick(Sender: TObject);
+Begin
+  TSwitch(Sender).IsChecked := not TSwitch(Sender).IsChecked;
+end;
+
+end.

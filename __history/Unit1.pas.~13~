@@ -1,0 +1,95 @@
+unit Unit1;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
+  FMX.Layouts, FMX.ListBox, FMX.Edit, FMX.Controls.Presentation, FMX.Objects,
+  System.Rtti, System.Generics.Collections,
+  System.ImageList, FMX.Pickers, FMX.ListBox.Selection, FMX.ImgList;
+
+type
+  TForm1 = class(TForm)
+    Layout1: TLayout;
+    Rectangle1: TRectangle;
+    Edit1: TEdit;
+    SearchEditButton1: TSearchEditButton;
+    ListBox: TListBox;
+    StyleBook1: TStyleBook;
+    procedure FormShow(Sender: TObject);
+    procedure ListBoxItemClick(const Sender: TCustomListBox; const Item:
+        TListBoxItem);
+    procedure SearchEditButton1Click(Sender: TObject);
+  private
+
+    function ListaAll: Boolean;
+    procedure SwitchOnClick(Sender: TObject);
+    { Private declarations }
+  public
+    ListBoxItem : TListBoxItem;
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.fmx}
+
+
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  SearchEditButton1Click(Self);
+end;
+
+function TForm1.ListaAll:Boolean;
+Begin
+  with ListBox do
+    Begin
+      Items.Clear;
+      BeginUpdate;
+
+      for var I := 0 to 20 do
+        begin
+          ListBoxItem := TListBoxItem.Create(ListBox);
+          ListBoxItem.Parent := ListBox;
+          ListBoxItem.StyleLookup := 'StyleListBox';
+          ListBoxItem.Height := 130;
+
+          ListBoxItem.Tag                                 := i;
+          ListBoxItem.TagString                           := 'Usuário: ' + i.ToString;
+
+          ListBoxItem.StylesData['lbl_id']                := i.ToString;
+          ListBoxItem.StylesData['lbl_nome']              := 'Nome: ' + i.ToString;
+          ListBoxItem.StylesData['lbl_usuario']           := 'Usuário: ' + i.ToString;;
+          ListBoxItem.StylesData['lbl_endereco']          := 'Endereço: ' + i.ToString;;
+
+          ListBoxItem.StylesData['sw.OnClick']            := TValue.From<TNotifyEvent>(SwitchOnClick);
+          ListBox.AddObject(ListBoxItem);
+        end;
+
+      ListBox.EndUpdate;
+    End;
+End;
+
+procedure TForm1.ListBoxItemClick(const Sender: TCustomListBox; const Item:
+    TListBoxItem);
+begin
+  ShowMessage(Item.TagString);
+end;
+
+procedure TForm1.SearchEditButton1Click(Sender: TObject);
+begin
+  ListaAll;
+end;
+
+procedure TForm1.SwitchOnClick(Sender: TObject);
+Begin
+  TSwitch(Sender).IsChecked := not TSwitch(Sender).IsChecked;
+end;
+
+
+end.

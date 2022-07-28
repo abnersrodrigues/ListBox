@@ -1,0 +1,102 @@
+unit ufrmPrinciap;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
+  FMX.Layouts, FMX.ListBox, FMX.Edit, FMX.Controls.Presentation, FMX.Objects,
+  System.Rtti, System.Generics.Collections,
+  System.ImageList, FMX.Pickers, FMX.ListBox.Selection, FMX.ImgList;
+
+type
+  TfrmPrincipal = class(TForm)
+    Layout1: TLayout;
+    Rectangle1: TRectangle;
+    Edit1: TEdit;
+    SearchEditButton1: TSearchEditButton;
+    ListBox: TListBox;
+    StyleBook: TStyleBook;
+    procedure FormShow(Sender: TObject);
+    procedure ListBoxItemClick(const Sender: TCustomListBox; const Item:
+        TListBoxItem);
+    procedure SearchEditButton1Click(Sender: TObject);
+  private
+
+    function ListaAll: Boolean;
+    procedure SwitchOnClick(Sender: TObject);
+    { Private declarations }
+  public
+    ListBoxItem : TListBoxItem;
+    { Public declarations }
+  end;
+
+var
+  frmPrincipal: TfrmPrincipal;
+
+implementation
+
+{$R *.fmx}
+
+
+
+procedure TfrmPrincipal.FormShow(Sender: TObject);
+begin
+  SearchEditButton1Click(Self);
+end;
+
+function TfrmPrincipal.ListaAll:Boolean;
+Begin
+    TThread.CreateAnonymousThread(procedure
+    Begin
+      Sleep(600);
+      TThread.Synchronize(nil, procedure
+      Begin
+        with ListBox do
+          Begin
+            Items.Clear;
+            BeginUpdate;
+
+            for var I := 0 to 1000 do
+              begin
+                ListBoxItem := TListBoxItem.Create(ListBox);
+                ListBoxItem.Parent := ListBox;
+                ListBoxItem.StyleLookup := 'StyleListBoxItem';
+                ListBoxItem.Height := 130;
+
+                ListBoxItem.Tag                                 := i;
+                ListBoxItem.TagString                           := 'Usuário: ' + i.ToString;
+
+                ListBoxItem.StylesData['lbl_id']                := 'Id: ' + i.ToString;
+                ListBoxItem.StylesData['lbl_nome']              := 'Nome: ' + i.ToString;
+                ListBoxItem.StylesData['lbl_usuario']           := 'Usuário: ' + i.ToString;;
+                ListBoxItem.StylesData['lbl_endereco']          := 'Endereço: ' + i.ToString;;
+
+                ListBoxItem.StylesData['sw.OnClick']            := TValue.From<TNotifyEvent>(SwitchOnClick);
+                ListBox.AddObject(ListBoxItem);
+              end;
+
+            ListBox.EndUpdate;
+          End;
+      End)
+    End).Start;
+End;
+
+procedure TfrmPrincipal.ListBoxItemClick(const Sender: TCustomListBox; const Item:
+    TListBoxItem);
+begin
+  ShowMessage(Item.TagString);
+end;
+
+procedure TfrmPrincipal.SearchEditButton1Click(Sender: TObject);
+begin
+  ListaAll;
+end;
+
+procedure TfrmPrincipal.SwitchOnClick(Sender: TObject);
+Begin
+  TSwitch(Sender).IsChecked := not TSwitch(Sender).IsChecked;
+end;
+
+
+end.
